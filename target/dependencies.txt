@@ -1,0 +1,4 @@
+digraph "com.example:cryptowallet:jar:1" { 
+	"com.example:cryptowallet:jar:1" -> "junit:junit:jar:4.11:test" ; 
+	"junit:junit:jar:4.11:test" -> "org.hamcrest:hamcrest-core:jar:1.3:test" ; 
+ } 
