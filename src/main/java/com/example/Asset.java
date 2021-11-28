@@ -83,9 +83,9 @@ public class Asset {
             JSONObject json = new JSONObject(response.body().string());
             JSONObject data = new JSONObject(json.getJSONArray("data").get(0).toString());
             setCurrentprice(data.getDouble("priceUsd"));
-            System.out.println(getSymbol());
-            System.out.println(getOriginalprice());
-            System.out.println(getCurrentprice());
+            // System.out.println(getSymbol());
+            // System.out.println(getOriginalprice());
+            // System.out.println(getCurrentprice());
         } catch (IOException e) {
             System.out.print("Error in request");
         }
@@ -106,6 +106,14 @@ public class Asset {
             case "MIOTA": return "iota";
         }
         return "unknown";
+    }
+
+    public double getCurrentPosition(){
+        return getCurrentprice()*getQuantity();
+    }
+
+    public double getPerformance(){
+        return getCurrentprice()/getOriginalprice();
     }
 
 }
