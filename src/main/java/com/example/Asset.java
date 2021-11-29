@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Asset {
+public class Asset implements Runnable {
 
     @CsvBindByName(column = "symbol")
     String symbol;
@@ -20,36 +20,36 @@ public class Asset {
     double quantity;
 
     @CsvBindByName(column = "price")
-    double originalprice;
+    double purchasePrice;
 
-    double currentprice;
+    double currentPrice;
 
-    public Asset(String symbol, double quantity, double originalprice) {
+    public Asset(String symbol, double quantity, double purchasePrice) {
         this.symbol = symbol;
         this.quantity = quantity;
-        this.originalprice = originalprice;
+        this.purchasePrice = purchasePrice;
     }
 
     public Asset() {
         this.symbol = "AAA";
         this.quantity = 0;
-        this.originalprice = 0;
+        this.purchasePrice = 0;
     }
 
-    public double getOriginalprice() {
-        return originalprice;
+    public double getPurchasePrice() {
+        return purchasePrice;
     }
 
-    public void setOriginalprice(double originalprice) {
-        this.originalprice = originalprice;
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
-    public double getCurrentprice() {
-        return currentprice;
+    public double getCurrentPrice() {
+        return currentPrice;
     }
 
-    public void setCurrentprice(double currentprice) {
-        this.currentprice = currentprice;
+    public void setCurrentPrice(double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 
     public String getSymbol() {
@@ -73,7 +73,17 @@ public class Asset {
             System.out.println("Submitted request ASSET_" + getSymbol() + " at " + LocalTime.now());
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
-            String url = "https://api.coincap.io/v2/assets/" + getAssetIdFromSymbol(getSymbol()) + "/history?interval=d1&start=1617753600000&end=1617753601000";
+            String urlId = "https://api.coincap.io/v2/assets?search=" + getSymbol();
+            Request requestId = new Request.Builder()
+                    .url(urlId)
+                    .method("GET", null)
+                    .header("Authorization", "Bearer 86743a2a-9b0b-43c5-890d-a74aede04b69")
+                    .build();
+            Response responseId = client.newCall(requestId).execute();
+            JSONObject jsonId = new JSONObject(responseId.body().string());
+            JSONObject dataId = new JSONObject(jsonId.getJSONArray("data").get(0).toString());
+            String url = "https://api.coincap.io/v2/assets/" + dataId.get("id")
+                    + "/history?interval=d1&start=1617753600000&end=1617753601000";
             Request request = new Request.Builder()
                     .url(url)
                     .method("GET", null)
@@ -82,38 +92,23 @@ public class Asset {
             Response response = client.newCall(request).execute();
             JSONObject json = new JSONObject(response.body().string());
             JSONObject data = new JSONObject(json.getJSONArray("data").get(0).toString());
-            setCurrentprice(data.getDouble("priceUsd"));
-            // System.out.println(getSymbol());
-            // System.out.println(getOriginalprice());
-            // System.out.println(getCurrentprice());
+            setCurrentPrice(data.getDouble("priceUsd"));
         } catch (IOException e) {
             System.out.print("Error in request");
         }
 
     }
 
-    public String getAssetIdFromSymbol(String symbol){
-        switch (symbol){
-            case "BTC": return "bitcoin";
-            case "ETH": return "ethereum";
-            case "XRP": return "ripple";
-            case "BCH": return "bitcoin-cash";
-            case "EOS": return "eos";
-            case "XLM": return "stellar";
-            case "LTC": return "Litecoin";
-            case "ADA": return "cardano";
-            case "USDT": return "tether";
-            case "MIOTA": return "iota";
-        }
-        return "unknown";
+    public double getCurrentPosition() {
+        return getCurrentPrice() * getQuantity();
     }
 
-    public double getCurrentPosition(){
-        return getCurrentprice()*getQuantity();
+    public double getPerformance() {
+        return getCurrentPrice() / getPurchasePrice();
     }
 
-    public double getPerformance(){
-        return getCurrentprice()/getOriginalprice();
+    public void run() {
+        requestPrice();
     }
 
 }

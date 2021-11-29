@@ -2,7 +2,7 @@ package com.example;
 
 import java.util.List;
 
-public class CryptoWallet implements Runnable {
+public class CryptoWallet {
 
     List<Asset> assets;
 
@@ -12,14 +12,6 @@ public class CryptoWallet implements Runnable {
 
     public void setAssets(List<Asset> assets) {
         this.assets = assets;
-    }
-
-    public void printAssets() {
-        for (Asset asset : getAssets()) {
-            System.out.println(asset.getSymbol());
-            System.out.println(asset.getOriginalprice());
-            System.out.println(asset.getCurrentprice());
-        }
     }
 
     public double getTotal() {
@@ -52,11 +44,5 @@ public class CryptoWallet implements Runnable {
             }
         }
         return worstAsset;
-    }
-
-    public void run() {
-        for (Asset asset : getAssets()) {
-            asset.requestPrice();
-        }
     }
 }
