@@ -41,4 +41,56 @@ public class AppTest
         assertEquals(asset.getCurrentPosition(), result, 0);
     }
 
+    @Test
+    public void testGetTotal(){
+        Asset one = new Asset("ABC", 2.0, 2.0);
+        Asset two = new Asset("DEF", 2.0, 2.0);
+        Asset three = new Asset("GHI", 2.0, 2.0);
+        one.setCurrentPrice(5.0);
+        two.setCurrentPrice(5.0);
+        three.setCurrentPrice(5.0);
+        CryptoWallet wallet = new CryptoWallet();
+        wallet.getAssets().add(one);
+        wallet.getAssets().add(two);
+        wallet.getAssets().add(three);
+        assertEquals(30.0, wallet.getTotal(), 0);
+    }
+
+    @Test
+    public void testGetBestAsset(){
+        Asset one = new Asset("ABC", 2.0, 2.0);
+        Asset two = new Asset("DEF", 2.0, 2.0);
+        Asset three = new Asset("GHI", 2.0, 2.0);
+        one.setCurrentPrice(10.0);
+        two.setCurrentPrice(20.0);
+        three.setCurrentPrice(40.0);
+        CryptoWallet wallet = new CryptoWallet();
+        wallet.getAssets().add(one);
+        wallet.getAssets().add(two);
+        wallet.getAssets().add(three);
+        assertEquals(three, wallet.getBestAsset());
+    }
+
+    @Test
+    public void testGetWorstAsset(){
+        Asset one = new Asset("ABC", 2.0, 2.0);
+        Asset two = new Asset("DEF", 2.0, 2.0);
+        Asset three = new Asset("GHI", 2.0, 2.0);
+        one.setCurrentPrice(10.0);
+        two.setCurrentPrice(20.0);
+        three.setCurrentPrice(40.0);
+        CryptoWallet wallet = new CryptoWallet();
+        wallet.getAssets().add(one);
+        wallet.getAssets().add(two);
+        wallet.getAssets().add(three);
+        assertEquals(one, wallet.getWorstAsset());
+    }
+
+    @Test
+    public void testRequestPrice(){
+        Asset asset = new Asset("ADA", 2.0, 2.0);
+        asset.requestPrice();
+        assertEquals(1.2165833386393017 , asset.getCurrentPrice(), 0);
+    }
+
 }

@@ -1,10 +1,15 @@
 package com.example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CryptoWallet {
 
     List<Asset> assets;
+
+    public CryptoWallet(){
+        this.assets = new ArrayList<Asset>();
+    }
 
     public List<Asset> getAssets() {
         return assets;
@@ -36,7 +41,7 @@ public class CryptoWallet {
 
     public Asset getWorstAsset() {
         double worstPerformance = getAssets().get(0).getPerformance();
-        Asset worstAsset = null;
+        Asset worstAsset = getAssets().get(0);
         for (Asset asset : getAssets()) {
             if (asset.getPerformance() < worstPerformance) {
                 worstPerformance = asset.getPerformance();
