@@ -20,7 +20,7 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException, CsvException {
-        String fileName = "/home/bebaptista/Documents/Genesis/cryptowallet/src/main/resources/Untitled 1.csv";
+        String fileName = "src/main/resources/Untitled 1.csv";
 
         CryptoWallet wallet = new CryptoWallet();
 
